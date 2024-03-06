@@ -2,6 +2,7 @@ import 'package:bottom_picker/bottom_picker.dart';
 import 'package:bottom_picker/resources/arrays.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:smarthome/drawer_widget.dart';
 import 'package:smarthome/schedule_pages/postAPIService.dart';
 import 'package:smarthome/schedule_pages/schedule_database.dart';
 import 'package:smarthome/schedule_pages/schedule_model.dart';
@@ -11,7 +12,7 @@ import 'package:weekday_selector/weekday_selector.dart';
 import '../dataBase.dart';
 import '../structure_model.dart';
 import 'package:toggle_switch/toggle_switch.dart';
-final postRequestService = PostRequestService('http://theautohome.xyz');
+final postRequestService = PostRequestService('http://192.168.0.112');
 
 List<Led>? rooms;
 List<Led>? items;
@@ -19,20 +20,20 @@ List _room = [];
 List _items = [];
 List tempItem = [];
 Led? selectedLed;
-String? scheduleName;
+String? schedule_name;
 String? selectedType;
 String? selectedName;
 String? selectedRoom;
 String? selectedItem;
 int? state;
-int? addState;
+int? add_state;
 int variable = 3;
 String week = '';
 Color currentColor = Colors.limeAccent;
 TextEditingController? textEditingController1;
 TextEditingController? textEditingController2;
 SharedPreferences? sP;
-int? scheduleId;
+int? schedule_id;
 
 FocusNode? input1FocusNode;
 List<bool> values = List.filled(7, false);
@@ -44,7 +45,7 @@ bool? queryType;
 class ScheduleForm extends StatefulWidget {
 
   ScheduleForm(
-      int _scheduleId,
+      int _schedule_id,
       bool _queryType,
       String? _selectedRoom,
       String? _selectedItem,
@@ -55,21 +56,21 @@ class ScheduleForm extends StatefulWidget {
       String? _week,
       String? _dateValue,
       String? _timeValue,
-      String? _scheduleName,
-      int? _addState) {
+      String? _schedule_name,
+      int? _add_state) {
     if(queryType == false){
       print("entered form");
     }
-    scheduleName = _scheduleName;
+    schedule_name = _schedule_name;
     queryType = _queryType;
     selectedRoom = _selectedRoom;
     selectedItem = _selectedItem;
     selectedType = _selectedType;
     selectedName = _selectedName;
     state = _state;
-    addState = _addState;
-    scheduleId = _scheduleId;
-    print("ScheduleID on Load : $scheduleId");
+    add_state = _add_state;
+    schedule_id = _schedule_id;
+    print("schedule_id on Load : $schedule_id");
     print("Query type on Load : $queryType");
       if(queryType == false){
         variable=_variable!;
@@ -91,7 +92,7 @@ class ScheduleForm extends StatefulWidget {
         }
       }
     }
-    textEditingController2 = TextEditingController(text: _scheduleName);
+    textEditingController2 = TextEditingController(text: _schedule_name);
     textEditingController1 = TextEditingController(text: variable.toString());
     print('Hi 3');
     _room = [];
@@ -127,15 +128,15 @@ class _ScheduleForm extends State<ScheduleForm> {
     setState(() {});
     items = await dbRoom.getRoomWise(selectedRoom!);
     for (int i = 0; i < items!.length; i++) {
-      tempItem.add(items![i].name);
+      tempItem.add(items![i].component_name);
     }
     _items = tempItem;
     if (queryType == false) {
       for (Led temp in items!) {
-        if (temp.name == selectedItem) {
+        if (temp.component_name == selectedItem) {
           selectedLed = temp;
           selectedType = temp.type;
-          selectedName = temp.name;
+          selectedName = temp.component_name;
           print("debug1");
           break;
         }
@@ -148,8 +149,8 @@ class _ScheduleForm extends State<ScheduleForm> {
     selectedItem = null;
     items = await dbRoom.getRoomWise(selectedRoom!);
     for (int i = 0; i < items!.length; i++) {
-      print(items![i].name);
-      tempItem.add(items![i].name);
+      print(items![i].component_name);
+      tempItem.add(items![i].component_name);
     }
     selectedLed = null;
     setState(() {
@@ -230,7 +231,7 @@ class _ScheduleForm extends State<ScheduleForm> {
               focusNode: input1FocusNode,
               decoration: const InputDecoration(hintText: "Enter Schedule Name"),
               onChanged: (value) {
-                scheduleName = value;
+                schedule_name = value;
               },
             ),
             if (_room.isNotEmpty)
@@ -260,10 +261,10 @@ class _ScheduleForm extends State<ScheduleForm> {
                   print("component part called");
                   selectedItem = newItem as String?;
                   for (Led temp in items!) {
-                    if (temp.name == selectedItem) {
+                    if (temp.component_name == selectedItem) {
                       selectedLed = temp;
                       selectedType = temp.type;
-                      selectedName = temp.name;
+                      selectedName = temp.component_name;
                       print("debug1");
                       switch (int.parse(selectedType!)) {
                         case 1:
@@ -320,7 +321,7 @@ class _ScheduleForm extends State<ScheduleForm> {
                     // animate must be set to true when using custom curve
                     onToggle: (val) {
                       state = val;
-                      print("ScheduleID on switch click : $scheduleId");
+                      print("schedule_id on switch click : $schedule_id");
                     },
                   ),
                 ),
@@ -375,11 +376,11 @@ class _ScheduleForm extends State<ScheduleForm> {
                     ),
                     MaterialButton(
                       onPressed: () async {
-                        print("ScheduleID on Set Press : $scheduleId");
+                        print("schedule_id on Set Press : $schedule_id");
                         if (queryType == true) {
-                          scheduleId = (scheduleId!+1)!;
-                          print("ScheduleID post increament : $scheduleId");
-                          sP!.setInt('scheduleId', scheduleId!);
+                          schedule_id = (schedule_id!+1)!;
+                          print("schedule_id post increament : $schedule_id");
+                          sP!.setInt('schedule_id', schedule_id!);
                           print("Audit");
                         }
                         if (week != 'no') {
@@ -396,17 +397,17 @@ class _ScheduleForm extends State<ScheduleForm> {
                           }
                         }
                         print("update state : $state");
-                        print("ScheduleID before set : $scheduleId");
+                        print("schedule_id before set : $schedule_id");
                         print("week on insert : $week");
                         print(selectedItem);
                         print(_items.length);
                         print(selectedLed);
 
                         S_Model tempModel = S_Model(
-                            idSchedule: scheduleId!,
-                            scheduleName: scheduleName!,
-                            id: int.parse(selectedLed!.id!),
-                            name: selectedLed!.name,
+                            schedule_id: schedule_id!,
+                            schedule_name: schedule_name!,
+                            component_id: int.parse(selectedLed!.component_id!),
+                            component_name: selectedLed!.component_name,
                             state: state,
                             room: selectedLed!.room,
                             variable: variable,
@@ -417,11 +418,11 @@ class _ScheduleForm extends State<ScheduleForm> {
                             recurring: week);
 
                         final body = {
-                          'table': 'schedule',
-                          'idSchedule': scheduleId,
-                          'scheduleName': scheduleName,
-                          'id': selectedLed!.id,
-                          'name': selectedLed!.name,
+                          'customer_id': customer_id,
+                          'schedule_id': schedule_id,
+                          'schedule_name': schedule_name,
+                          'component_id': selectedLed!.component_id,
+                          'component_name': selectedLed!.component_name,
                           'state': state,
                           'room': selectedLed!.room,
                           'variable': variable,
@@ -438,7 +439,7 @@ class _ScheduleForm extends State<ScheduleForm> {
                           print("Insert");
                           print(dateValue);
                           print(timeValue);
-                          print(scheduleId);
+                          print(schedule_id);
                           dbSchedule.insertModel(tempModel);
                           final response = await postRequestService.post(
                               'insert_schedule.php', body);
@@ -455,10 +456,10 @@ class _ScheduleForm extends State<ScheduleForm> {
                         } else if (queryType == false) {
                           print(queryType);
                           print("update");
-                          print(scheduleName);
+                          print(schedule_name);
                           print(dateValue);
                           print(timeValue);
-                          print(scheduleId);
+                          print(schedule_id);
                           dbSchedule.updateModel(tempModel);
                           final response = await postRequestService.post(
                               'update_schedule.php', body);
@@ -586,11 +587,11 @@ class _ScheduleForm extends State<ScheduleForm> {
                             ),
                             MaterialButton(
                               onPressed: () async {
-                                print("ScheduleID on Set Press : $scheduleId");
+                                print("schedule_id on Set Press : $schedule_id");
                                 if (queryType == true) {
-                                  scheduleId = (scheduleId!+1);
-                                  print("ScheduleID post increament : $scheduleId");
-                                  sP!.setInt('scheduleId', scheduleId!);
+                                  schedule_id = (schedule_id!+1);
+                                  print("schedule_id post increament : $schedule_id");
+                                  sP!.setInt('schedule_id', schedule_id!);
                                   print("Audit");
                                 }
                                 if (week != 'no') {
@@ -603,13 +604,13 @@ class _ScheduleForm extends State<ScheduleForm> {
                                   }
                                 }
                                 print("update state : $state");
-                                print("ScheduleID before set : $scheduleId");
+                                print("schedule_id before set : $schedule_id");
 
                                 S_Model tempModel = S_Model(
-                                    idSchedule: scheduleId,
-                                    scheduleName: scheduleName,
-                                    id: int.parse(selectedLed!.id!),
-                                    name: selectedLed!.name,
+                                    schedule_id: schedule_id,
+                                    schedule_name: schedule_name,
+                                    component_id: int.parse(selectedLed!.component_id!),
+                                    component_name: selectedLed!.component_name,
                                     state: state,
                                     room: selectedLed!.room,
                                     variable: variable,
@@ -620,11 +621,11 @@ class _ScheduleForm extends State<ScheduleForm> {
                                     recurring: week);
 
                                 final body = {
-                                  'table': 'schedule',
-                                  'idSchedule': scheduleId,
-                                  'scheduleName': scheduleName,
-                                  'id': selectedLed!.id,
-                                  'name': selectedLed!.name,
+                                  'customer_id': customer_id,
+                                  'schedule_id': schedule_id,
+                                  'schedule_name': schedule_name,
+                                  'component_id': selectedLed!.component_id,
+                                  'component_name': selectedLed!.component_name,
                                   'state': state,
                                   'room': selectedLed!.room,
                                   'variable': variable,
@@ -640,7 +641,7 @@ class _ScheduleForm extends State<ScheduleForm> {
                                   print(queryType);
                                   print("Insert");
                                   print(dateValue);
-                                  print(scheduleId);
+                                  print(schedule_id);
                                   dbSchedule.insertModel(tempModel);
                                   final response = await postRequestService.post(
                                       'insert_schedule.php', body);
@@ -656,10 +657,10 @@ class _ScheduleForm extends State<ScheduleForm> {
                                 } else if (queryType == false) {
                                   print(queryType);
                                   print("update");
-                                  print(scheduleName);
+                                  print(schedule_name);
                                   print(dateValue);
                                   print(timeValue);
-                                  print(scheduleId);
+                                  print(schedule_id);
                                   dbSchedule.updateModel(tempModel);
                                   final response = await postRequestService.post(
                                       'update_schedule.php', body);
@@ -787,11 +788,11 @@ class _ScheduleForm extends State<ScheduleForm> {
                             ),
                             MaterialButton(
                               onPressed: () async {
-                                print("ScheduleID on Set Press : $scheduleId");
+                                print("schedule_id on Set Press : $schedule_id");
                                 if (queryType == true) {
-                                  scheduleId=scheduleId!+1;
-                                  print("ScheduleID post increament : $scheduleId");
-                                  sP!.setInt('scheduleId', scheduleId!);
+                                  schedule_id=schedule_id!+1;
+                                  print("schedule_id post increament : $schedule_id");
+                                  sP!.setInt('schedule_id', schedule_id!);
                                   print("Audit");
                                 }
                                 if (week != 'no') {
@@ -804,13 +805,13 @@ class _ScheduleForm extends State<ScheduleForm> {
                                   }
                                 }
                                 print("update state : $state");
-                                print("ScheduleID before set : $scheduleId");
+                                print("schedule_id before set : $schedule_id");
 
                                 S_Model tempModel = S_Model(
-                                    idSchedule: scheduleId,
-                                    scheduleName: scheduleName,
-                                    id: int.parse(selectedLed!.id!),
-                                    name: selectedLed!.name,
+                                    schedule_id: schedule_id,
+                                    schedule_name: schedule_name,
+                                    component_id: int.parse(selectedLed!.component_id!),
+                                    component_name: selectedLed!.component_name,
                                     state: state,
                                     room: selectedLed!.room,
                                     variable: variable!,
@@ -821,11 +822,11 @@ class _ScheduleForm extends State<ScheduleForm> {
                                     recurring: week);
 
                                 final body = {
-                                  'table': 'schedule',
-                                  'idSchedule': scheduleId,
-                                  'scheduleName': scheduleName,
-                                  'id': selectedLed!.id,
-                                  'name': selectedLed!.name,
+                                  'customer_id': customer_id,
+                                  'schedule_id': schedule_id,
+                                  'schedule_name': schedule_name,
+                                  'component_id': selectedLed!.component_id,
+                                  'component_name': selectedLed!.component_name,
                                   'state': state,
                                   'room': selectedLed!.room,
                                   'variable': variable,
@@ -841,7 +842,7 @@ class _ScheduleForm extends State<ScheduleForm> {
                                   print(queryType);
                                   print("Insert");
                                   print(dateValue);
-                                  print(scheduleId);
+                                  print(schedule_id);
                                   dbSchedule.insertModel(tempModel);
                                   final response = await postRequestService.post(
                                       'insert_schedule.php', body);
@@ -857,10 +858,10 @@ class _ScheduleForm extends State<ScheduleForm> {
                                 } else if (queryType == false) {
                                   print(queryType);
                                   print("update");
-                                  print(scheduleName);
+                                  print(schedule_name);
                                   print(dateValue);
                                   print(timeValue);
-                                  print(scheduleId);
+                                  print(schedule_id);
                                   dbSchedule.updateModel(tempModel);
                                   final response = await postRequestService.post(
                                       'update_schedule.php', body);
@@ -928,7 +929,7 @@ class _ScheduleForm extends State<ScheduleForm> {
                       ToggleSwitch(
                       minWidth: 50.0,
                       minHeight: 30.0,
-                      initialLabelIndex: addState,
+                      initialLabelIndex: add_state,
                       cornerRadius: 10.0,
                       activeFgColor: Colors.white,
                       inactiveBgColor: Colors.grey,
@@ -943,7 +944,7 @@ class _ScheduleForm extends State<ScheduleForm> {
                       animate: true, // with just animate set to true, default curve = Curves.easeIn
                       curve: Curves.bounceInOut, // animate must be set to true when using custom curve
                       onToggle: (state) {
-                        addState=state;
+                        add_state=state;
                       },
                       ),
                     TextFormField(
@@ -1005,11 +1006,11 @@ class _ScheduleForm extends State<ScheduleForm> {
                             ),
                             MaterialButton(
                               onPressed: () async {
-                                print("ScheduleID on Set Press : $scheduleId");
+                                print("schedule_id on Set Press : $schedule_id");
                                 if (queryType == true) {
-                                  scheduleId=scheduleId!+1;
-                                  print("ScheduleID post increament : $scheduleId");
-                                  sP!.setInt('scheduleId', scheduleId!);
+                                  schedule_id=schedule_id!+1;
+                                  print("schedule_id post increament : $schedule_id");
+                                  sP!.setInt('schedule_id', schedule_id!);
                                   print("Audit");
                                 }
                                 if (week != 'no') {
@@ -1022,13 +1023,13 @@ class _ScheduleForm extends State<ScheduleForm> {
                                   }
                                 }
                                 print("update state : $state");
-                                print("ScheduleID before set : $scheduleId");
+                                print("schedule_id before set : $schedule_id");
 
                                 S_Model tempModel = S_Model(
-                                    idSchedule: scheduleId,
-                                    scheduleName: scheduleName,
-                                    id: int.parse(selectedLed!.id!),
-                                    name: selectedLed!.name,
+                                    schedule_id: schedule_id,
+                                    schedule_name: schedule_name,
+                                    component_id: int.parse(selectedLed!.component_id!),
+                                    component_name: selectedLed!.component_name,
                                     state: state,
                                     room: selectedLed!.room,
                                     variable: variable,
@@ -1037,14 +1038,14 @@ class _ScheduleForm extends State<ScheduleForm> {
                                     time: timeValue,
                                     disabled: 1,
                                     recurring: week,
-                                    addState: addState);
+                                    add_state: add_state);
 
                                 final body = {
-                                  'table': 'schedule',
-                                  'idSchedule': scheduleId,
-                                  'scheduleName': scheduleName,
-                                  'id': selectedLed!.id,
-                                  'name': selectedLed!.name,
+                                  'customer_id': customer_id,
+                                  'schedule_id': schedule_id,
+                                  'schedule_name': schedule_name,
+                                  'component_id': selectedLed!.component_id,
+                                  'component_name': selectedLed!.component_name,
                                   'state': state,
                                   'room': selectedLed!.room,
                                   'variable': variable,
@@ -1054,14 +1055,14 @@ class _ScheduleForm extends State<ScheduleForm> {
                                   'time': timeValue,
                                   'disabled': 1,
                                   'recurring': week,
-                                  'addState' : addState
+                                  'add_state' : add_state
                                 };
 
                                 if (queryType == true) {
                                   print(queryType);
                                   print("Insert");
                                   print(dateValue);
-                                  print(scheduleId);
+                                  print(schedule_id);
                                   dbSchedule.insertModel(tempModel);
                                   final response = await postRequestService.post(
                                       'insert_schedule.php', body);
@@ -1077,10 +1078,10 @@ class _ScheduleForm extends State<ScheduleForm> {
                                 } else if (queryType == false) {
                                   print(queryType);
                                   print("update");
-                                  print(scheduleName);
+                                  print(schedule_name);
                                   print(dateValue);
                                   print(timeValue);
-                                  print(scheduleId);
+                                  print(schedule_id);
                                   dbSchedule.updateModel(tempModel);
                                   final response = await postRequestService.post(
                                       'update_schedule.php', body);
@@ -1204,11 +1205,11 @@ class _ScheduleForm extends State<ScheduleForm> {
                             ),
                             MaterialButton(
                               onPressed: () async {
-                                print("ScheduleID on Set Press : $scheduleId");
+                                print("schedule_id on Set Press : $schedule_id");
                                 if (queryType == true) {
-                                  scheduleId=scheduleId!+1;
-                                  print("ScheduleID post increament : $scheduleId");
-                                  sP!.setInt('scheduleId', scheduleId!);
+                                  schedule_id=schedule_id!+1;
+                                  print("schedule_id post increament : $schedule_id");
+                                  sP!.setInt('schedule_id', schedule_id!);
                                   print("Audit");
                                 }
                                 if (week != 'no') {
@@ -1221,13 +1222,13 @@ class _ScheduleForm extends State<ScheduleForm> {
                                   }
                                 }
                                 print("update state : $state");
-                                print("ScheduleID before set : $scheduleId");
+                                print("schedule_id before set : $schedule_id");
 
                                 S_Model tempModel = S_Model(
-                                    idSchedule: scheduleId,
-                                    scheduleName: scheduleName,
-                                    id: int.parse(selectedLed!.id!),
-                                    name: selectedLed!.name,
+                                    schedule_id: schedule_id,
+                                    schedule_name: schedule_name,
+                                    component_id: int.parse(selectedLed!.component_id!),
+                                    component_name: selectedLed!.component_name,
                                     state: state,
                                     room: selectedLed!.room,
                                     variable: variable,
@@ -1238,11 +1239,11 @@ class _ScheduleForm extends State<ScheduleForm> {
                                     recurring: week);
 
                                 final body = {
-                                  'table': 'schedule',
-                                  'idSchedule': scheduleId,
-                                  'scheduleName': scheduleName,
-                                  'id': selectedLed!.id,
-                                  'name': selectedLed!.name,
+                                  'customer_id': customer_id,
+                                  'schedule_id': schedule_id,
+                                  'schedule_name': schedule_name,
+                                  'component_id': selectedLed!.component_id,
+                                  'component_name': selectedLed!.component_name,
                                   'state': state,
                                   'room': selectedLed!.room,
                                   'variable': variable,
@@ -1258,7 +1259,7 @@ class _ScheduleForm extends State<ScheduleForm> {
                                   print(queryType);
                                   print("Insert");
                                   print(dateValue);
-                                  print(scheduleId);
+                                  print(schedule_id);
                                   dbSchedule.insertModel(tempModel);
                                   final response = await postRequestService.post(
                                       'insert_schedule.php', body);
@@ -1274,15 +1275,15 @@ class _ScheduleForm extends State<ScheduleForm> {
                                 } else if (queryType == false) {
                                   print(queryType);
                                   print("update");
-                                  print(scheduleName);
+                                  print(schedule_name);
                                   print(dateValue);
                                   print(timeValue);
-                                  print(scheduleId);
+                                  print(schedule_id);
                                   dbSchedule.updateModel(tempModel);
                                   final response = await postRequestService.post(
                                       'update_schedule.php', body);
 
-                                  if (response.statusCode == 201) {
+                                  if (response.statusCode == 200) {
                                     print("Post success response");
                                     // The post was created successfullyz
                                   } else {

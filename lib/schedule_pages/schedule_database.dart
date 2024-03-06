@@ -10,7 +10,7 @@ class DbManagerSc {
     _database = await openDatabase(join(await getDatabasesPath(), "sc.db"),
         version: 1, onCreate: (Database db, int version) async {
           await db.execute(
-            "CREATE TABLE schedule(idSchedule INTEGER PRIMARY KEY, scheduleName TEXT, id INTEGER, name TEXT, state INTEGER, room TEXT, variable INTEGER, type INTEGER, date TEXT, time TEXT, disabled INTEGER, recurring TEXT, addState INTEGER)",
+            "CREATE TABLE schedule(schedule_id INTEGER PRIMARY KEY, schedule_name TEXT, component_id INTEGER, component_name TEXT, state INTEGER, room TEXT, variable INTEGER, type INTEGER, date TEXT, time TEXT, disabled INTEGER, recurring TEXT, add_state INTEGER)",
           );
         });
     return _database;
@@ -40,10 +40,10 @@ class DbManagerSc {
 
     return List.generate(maps.length, (i) {
       return S_Model(
-          idSchedule: maps[i]['idSchedule'],
-          scheduleName: maps[i]['scheduleName'],
-          id: maps[i]['id'],
-          name: maps[i]['name'],
+          schedule_id: maps[i]['schedule_id'],
+          schedule_name: maps[i]['schedule_name'],
+          component_id: maps[i]['component_id'],
+          component_name: maps[i]['component_name'],
           state: maps[i]['state'],
           room: maps[i]['room'],
           variable: maps[i]['variable'],
@@ -52,7 +52,7 @@ class DbManagerSc {
           time: maps[i]['time'],
           disabled: maps[i]['disabled'],
           recurring: maps[i]['recurring'],
-          addState: maps[i]['addState']);
+          add_state: maps[i]['add_state']);
       
     });
   }
@@ -60,12 +60,12 @@ class DbManagerSc {
   Future<int> updateModel(S_Model model) async {
     await openDb();
     return await _database!.update('schedule', model.toJson(),
-        where: "idSchedule = ?", whereArgs: [model.idSchedule]);
+        where: "schedule_id = ?", whereArgs: [model.schedule_id]);
   }
 
   Future<void> deleteModel(S_Model model) async {
     await openDb();
-    await _database!.delete('schedule', where: "idSchedule = ?", whereArgs: [model.idSchedule]);
+    await _database!.delete('schedule', where: "schedule_id = ?", whereArgs: [model.schedule_id]);
   }
 }
 Future<void> deleteDatabase() =>

@@ -47,11 +47,11 @@ class _ItemCardState extends State<ItemCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    'Name: ${widget.model!.scheduleName!}',
+                    'Name: ${widget.model!.schedule_name!}',
                     style: TextStyle(fontSize: 15),
                   ),
                   Text(
-                    'Item: ${widget.model!.name}',
+                    'Item: ${widget.model!.schedule_name}',
                     style: TextStyle(
                       fontSize: 15,
                     ),

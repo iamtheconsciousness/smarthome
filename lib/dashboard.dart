@@ -29,7 +29,6 @@ class _MyDashboardState extends State<MyDashboard> {
 
    SharedPreferences? logindata;
    late String username;
-   String? table;
   @override
   void initState() {
     // TODO: implement initState
@@ -40,7 +39,6 @@ class _MyDashboardState extends State<MyDashboard> {
     logindata = await SharedPreferences.getInstance();
     setState(() {
       username = logindata!.getString('username')!;
-      table = logindata!.getString('table')!;
       print("Database print : ");
     });
   }

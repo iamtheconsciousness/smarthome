@@ -6,13 +6,13 @@ import 'service_update.dart';
 
 
 Color currentColor = Colors.limeAccent;
-String? _id, _table;
+String? _component_id, _customer_id;
 int flag=0;
 
 class DialogBoxOne {
-  DialogBoxOne(String id,String table){
-    _id=id;
-    _table=table;
+  DialogBoxOne(String component_id,String customer_id){
+    _component_id=component_id;
+    _customer_id=customer_id;
 
 }
   Widget dialog({BuildContext? context,
@@ -51,7 +51,7 @@ class DialogBoxOne {
           ),
           MaterialButton(
             onPressed: () {
-              String updateVariableUrl ='https://theautohome.xyz/update_variable.php?table=$_table&id=$_id&variable=$val';
+              String updateVariableUrl ='http://192.168.0.112/update_variable.php?customer_id=$_customer_id&component_id=$_component_id&variable=$val';
               update_services.getAccess(updateVariableUrl).then((tab)  async{
               });
               Navigator.of(context).pop();
@@ -67,8 +67,8 @@ class DialogBoxOne {
 
 class DialogBoxTwo {
   DialogBoxTwo(String id,String table){
-    _id=id;
-    _table=table;
+    _component_id=id;
+    _customer_id=table;
   }
   Widget dialog({BuildContext? context,
     Function? onPressed,
@@ -109,7 +109,7 @@ class DialogBoxTwo {
           MaterialButton(
             onPressed: () {
               int variable=currentColor.value;
-              String updateVariableUrl ='https://theautohome.xyz/update_variable.php?table=$_table&id=$_id&variable=$variable';
+              String updateVariableUrl ='http://192.168.0.112/update_variable.php?customer_id=$_customer_id&component_id=$_component_id&variable=$variable';
               print(updateVariableUrl);
               update_services.getAccess(updateVariableUrl).then((tab)  async{
               });
@@ -127,9 +127,9 @@ class DialogBoxTwo {
 
 class DialogBoxThree {
   DialogBoxThree(String id,String table){
-    _id=id;
-    _table=table;
-    String updateFlagUrl ='https://theautohome.xyz/update_flag.php?table=$_table&id=$_id&flag=0';
+    _component_id=id;
+    _customer_id=table;
+    String updateFlagUrl ='http://192.168.0.112/update_flag.php?customer_id=$_customer_id&component_id=$_component_id&flag=0';
     update_services.getAccess(updateFlagUrl).then((tab)  async{
     });
   }
@@ -166,7 +166,7 @@ class DialogBoxThree {
             curve: Curves.bounceInOut, // animate must be set to true when using custom curve
             onToggle: (state) {
 
-              String updateAddstateUrl ='https://theautohome.xyz/update_addState.php?table=$_table&id=$_id&addState=$state';
+              String updateAddstateUrl ='http://192.168.0.112/update_addState.php?customer_id=$_customer_id&component_id=$_component_id&addState=$state';
               update_services.getAccess(updateAddstateUrl).then((tab)  async{
               });
             },
@@ -185,7 +185,7 @@ class DialogBoxThree {
                 child: new Text("Set"),
                 onPressed: (){
                   setState((){
-                    String updateVariableUrl ='https://theautohome.xyz/update_variable.php?table=$_table&id=$_id&variable=$channel';
+                    String updateVariableUrl ='http://192.168.0.112/update_variable.php?customer_id=$_customer_id&component_id=$_component_id&variable=$channel';
                     update_services.getAccess(updateVariableUrl).then((tab)  async{
                     });
                   });
@@ -196,7 +196,7 @@ class DialogBoxThree {
                 onPressed: (){
                   setState((){
                     flag++;
-                    String updateFlagUrl ='https://theautohome.xyz/update_flag.php?table=$_table&id=$_id&flag=$flag';
+                    String updateFlagUrl ='http://192.168.0.112/update_flag.php?customer_id=$_customer_id&component_id=$_component_id&flag=$flag';
                     update_services.getAccess(updateFlagUrl).then((tab)  async{
                     });
                   });
@@ -207,7 +207,7 @@ class DialogBoxThree {
                 onPressed: (){
                   setState((){
                     flag--;
-                    String updateFlagUrl ='https://theautohome.xyz/update_flag.php?table=$_table&id=$_id&flag=$flag';
+                    String updateFlagUrl ='http://192.168.0.112/update_flag.php?customer_id=$_customer_id&component_id=$_component_id&flag=$flag';
                     update_services.getAccess(updateFlagUrl).then((tab)  async{
                     });
                   });
@@ -229,7 +229,7 @@ class DialogBoxThree {
           ),
           MaterialButton(
             onPressed: () {
-              String updateVariableUrl ='https://theautohome.xyz/update_variable.php?table=$_table&id=$_id&variable=$channel';
+              String updateVariableUrl ='http://192.168.0.112/update_variable.php?customer_id=$_customer_id&component_id=$_component_id&variable=$channel';
               update_services.getAccess(updateVariableUrl).then((tab)  async{
               });
               Navigator.of(context).pop();
@@ -246,9 +246,9 @@ class DialogBoxThree {
 
 class DialogBoxFour {
   DialogBoxFour(String id,String table){
-    _id=id;
-    _table=table;
-    String updateVariableUrl ='https://theautohome.xyz/update_variable.php?table=$_table&id=$_id&variable=24';
+    _component_id=id;
+    _customer_id=table;
+    String updateVariableUrl ='http://192.168.0.112/update_variable.php?customer_id=$_customer_id&component_id=$_component_id&variable=24';
     update_services.getAccess(updateVariableUrl).then((tab)  async{
     });
   }
@@ -299,7 +299,7 @@ class DialogBoxFour {
           ),
           MaterialButton(
             onPressed: () {
-              String updateVariableUrl ='https://theautohome.xyz/update_variable.php?table=$_table&id=$_id&variable=$temperature';
+              String updateVariableUrl ='http://192.168.0.112/update_variable.php?customer_id=$_customer_id&component_id=$_component_id&variable=$temperature';
               update_services.getAccess(updateVariableUrl).then((tab)  async{
               });
               Navigator.of(context).pop();

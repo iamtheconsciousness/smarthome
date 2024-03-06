@@ -30,36 +30,36 @@ class ReadTable {
 
 class Led {
   Led({
-    this.id,
+    this.component_id,
     this.state,
     this.room,
     this.variable,
     this.type,
-    this.name,
+    this.component_name,
   });
 
-  String? id;
+  String? component_id;
   String? state;
   String? room;
   String? variable;
   String? type;
-  String? name;
+  String? component_name;
   factory Led.fromJson(Map<String, dynamic> json) => Led(
-    id: json["id"],
-    state: json["state"],
-    room: json["room"],
-    variable: json["variable"],
-    type: json["type"],
-    name: json["name"]
+      component_id: json["component_id"],
+      state: json["state"],
+      room: json["room"],
+      variable: json["variable"],
+      type: json["type"],
+      component_name: json["component_name"]
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
+    "component_id": component_id,
     "state": state,
     "room": room,
     "variable": variable,
     "type": type,
-    "name":name
+    "component_name":component_name
   };
 }
 

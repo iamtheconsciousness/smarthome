@@ -12,34 +12,31 @@ class MyLed {
   MyLed({
     required this.room,
     required this.roomDetail,
-    required this.table,
-    required this.scheduleTable,
     required this.name,
+    required this.customer_id,
     required this.success,
   });
 
   List<String> room;
   List<RoomDetail> roomDetail;
-  String table;
-  String scheduleTable;
   String name;
+  String customer_id;
+
   int success;
 
   factory MyLed.fromJson(Map<String, dynamic> json) => MyLed(
     room: List<String>.from(json["room"].map((x) => x)),
     roomDetail: List<RoomDetail>.from(json["room_detail"].map((x) => RoomDetail.fromJson(x))),
-    table: json["table"],
-    scheduleTable: json["schedule_table"],
     name: json["name"],
+    customer_id: json["customer_id"],
     success: json["success"],
   );
 
   Map<String, dynamic> toJson() => {
     "room": List<dynamic>.from(room.map((x) => x)),
     "room_detail": List<dynamic>.from(roomDetail.map((x) => x.toJson())),
-    "table": table,
-    "schedule_table": scheduleTable,
     "name": name,
+    "customer_id": customer_id,
     "success": success,
   };
 }
@@ -62,20 +59,20 @@ class RoomDetail {
 
 class Device {
   Device({
-    required this.id,
+    required this.component_id,
     required this.type,
   });
 
-  String id;
+  String component_id;
   String type;
 
   factory Device.fromJson(Map<String, dynamic> json) => Device(
-    id: json["id"],
+    component_id: json["component_id"],
     type: json["type"],
   );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
+    "component_id": component_id,
     "type": type,
   };
 }

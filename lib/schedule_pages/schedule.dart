@@ -7,7 +7,7 @@ import 'schedule_model.dart';
 import 'schedule_database.dart';
 import 'scheduleCard.dart';
 
-final postRequestService = PostRequestService('http://theautohome.xyz');
+final postRequestService = PostRequestService('http://192.168.0.112');
 
 
 class ScheduleMain extends StatefulWidget {
@@ -26,7 +26,7 @@ class _ScheduleMain extends State<ScheduleMain> {
   FocusNode? input2FocusNode;
   SharedPreferences? userData;
   String? username;
-  String? table;
+  String? customer_id;
   int? scheduleIdMainPage;
 
   @override
@@ -42,7 +42,7 @@ class _ScheduleMain extends State<ScheduleMain> {
     scheduleIdMainPage=userData!.getInt('scheduleId');
     print("interrupt");
     setState(() {
-      table = userData!.getString('table');
+      customer_id = userData!.getString('customer_id');
     });
   }
 
@@ -64,7 +64,7 @@ class _ScheduleMain extends State<ScheduleMain> {
       appBar: AppBar(
         title: Text('Sqlite Demo'),
       ),
-      drawer: DrawerWidget(table!),
+      drawer: DrawerWidget(customer_id!),
       floatingActionButton: FloatingActionButton(
         onPressed: ()
     {
@@ -102,8 +102,8 @@ class _ScheduleMain extends State<ScheduleMain> {
                   input2: input2,
                   onDeletePress: () async {
                     final body = {
-                      'table': 'schedule',
-                      'idSchedule': _model.idSchedule,
+                      'customer_id': customer_id,
+                      'schedule_id': _model.schedule_id,
                     };
                     final response = await postRequestService.post(
                         'delete_schedule.php', body);
@@ -116,7 +116,7 @@ class _ScheduleMain extends State<ScheduleMain> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => ScheduleForm(_model.idSchedule!,false,_model.room!,_model.name!,_model.type.toString(),_model.scheduleName!,_model.state!,_model.variable!,_model.recurring,_model.date!,_model.time!,_model.scheduleName!,_model.addState))
+                            builder: (context) => ScheduleForm(_model.schedule_id!,false,_model.room!,_model.component_name!,_model.type.toString(),_model.schedule_name!,_model.state!,_model.variable!,_model.recurring,_model.date!,_model.time!,_model.schedule_name!,_model.add_state))
                     ).then((value) { setState(() {});});
                   },
                 );

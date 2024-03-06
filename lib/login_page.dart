@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'Services/loginApi.dart';
 import 'main.dart';
 import 'services.dart';
 import 'login_model.dart';
 import 'dataBase.dart';
 import 'structure_model.dart';
 import 'structure_service.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 List<Led>? rLed;
 final DbManager dbManager = new DbManager();
-String readUrl='https://theautohome.xyz/read_all.php?table=';
+String readUrl='http://192.168.0.112/read_all.php?customer_id=';
 
 
 void main() {
@@ -42,6 +44,9 @@ class _MyLoginPageState extends State<MyLoginPage> {
   final password_controller = TextEditingController();
    SharedPreferences? logindata;
    bool? newuser;
+
+  final storage = FlutterSecureStorage();
+
   @override
   void initState() {
     // TODO: implement initState
@@ -105,7 +110,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
               ),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 isLoading=true;
                 Future.delayed(Duration(milliseconds: 2000), () {
                   // Do something
@@ -114,8 +119,41 @@ class _MyLoginPageState extends State<MyLoginPage> {
                 String password = password_controller.text;
                  MyLed _access;
 
+
+                 //New Code
                 if (username != '' && password != '') {
-                  String loginUrl='https://theautohome.xyz/login.php?user=$username&pass=$password';
+                  final loginRequestService = LoginRequestService('https://httpbin.org/');
+                  final body = {
+                    'email': username,
+                    'password': password,
+                  };
+
+              try {
+              // Make the login request
+              final response = await loginRequestService.post('post', body);
+
+              // Check the response status
+              if (response.statusCode == 200) {
+              // Login successful
+              print('Login successful');
+              print('Response body: ${response.body}');
+              } else {
+              // Login failed
+              print('Login failed');
+              print('Response status code: ${response.statusCode}');
+              print('Response body: ${response.body}');
+              }
+              } catch (e) {
+              // Handle any error occurred during the request
+              print('Error occurred: $e');
+              }
+              }
+
+
+                 //Old API setup
+/*
+                if (username != '' && password != '') {
+                  String loginUrl='http://192.168.0.112/login.php?user=$username&pass=$password';
 
                   services.getAccess(loginUrl).then((access)  {
                     _access=access;
@@ -139,26 +177,26 @@ class _MyLoginPageState extends State<MyLoginPage> {
 
                     }
                     else if(_access.success==200){
+                      print('Successfull');
+                      storage.write(key: 'accessToken', value: '');
                       isLoading=false;
-                      logindata?.setString('table',_access.table);
-                      readUrl=readUrl+_access.table;
+                      logindata?.setString('customer_id', _access.customer_id);
+                      readUrl=readUrl+_access.customer_id;
+                      print(readUrl);
                       struct_services.getAccess(readUrl).then((tab)  async {
                         rLed=tab;
 
                         dbManager.insertModel(rLed!);
-                        print('Successfull');
                         logindata?.setBool('login', false);
                         logindata?.setString('username', access.name);
-                        logindata?.setString('schedule_table',_access.scheduleTable);
                         logindata?.setInt('scheduleId', 1);
                         await Navigator.pushAndRemoveUntil(context,
                           MaterialPageRoute(builder: (context) => MyDashboard()),(route) => false,);
-
                       });
                     }
                   });
 
-                }
+                }*/
               },
               child: Text("Log-In"),
             )

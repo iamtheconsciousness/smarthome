@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dataBase.dart';
 import 'structure_model.dart';
 import 'drawer_widget.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 
 class MainPage extends StatelessWidget {
@@ -31,7 +32,7 @@ class _MyDashboardState extends State<MyDashboard> {
 
    SharedPreferences? logindata;
    String? username;
-   String? table;
+   String? customer_id;
    List<String>? test;
 
    TextEditingController? nameController;
@@ -44,9 +45,15 @@ class _MyDashboardState extends State<MyDashboard> {
   }
   void initial() async {
     logindata = await SharedPreferences.getInstance();
+
     setState(() {
       username = logindata!.getString('username');
-      table = logindata!.getString('table');
+       customer_id = logindata!.getString('customer_id');
+      final storage = FlutterSecureStorage();
+
+      print("customer_id");
+       print(customer_id);
+       print(storage.read(key: 'tempKey'));
       nameController = TextEditingController();
       passwordController = TextEditingController();
     });
@@ -64,16 +71,11 @@ class _MyDashboardState extends State<MyDashboard> {
         title: Text(''),
       ),
 
-      drawer: DrawerWidget(table!),
+      drawer: DrawerWidget(customer_id!),
       body :
       Container(
         padding: EdgeInsets.fromLTRB(0, 160, 0, 0), constraints: BoxConstraints.expand(),
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('images/1.jpg'),
-            fit: BoxFit.cover,
-          ),
-        ),
+
 
         child: Column(
             children : [

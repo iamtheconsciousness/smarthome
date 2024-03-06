@@ -11,7 +11,7 @@ class DbManager {
     _database = await openDatabase(join(await getDatabasesPath(), "ss.db"),
         version: 1, onCreate: (Database db, int version) async {
           await db.execute(
-            "CREATE TABLE model(id TEXT PRIMARY KEY , state TEXT, room TEXT , variable TEXT , type TEXT, name TEXT)",
+            "CREATE TABLE model(component_id TEXT PRIMARY KEY , state TEXT, room TEXT , variable TEXT , type TEXT, component_name TEXT)",
           );
         });
     return _database;
@@ -30,13 +30,16 @@ class DbManager {
     final List<Map<String, dynamic>> maps = await _database!.rawQuery(
         "SELECT * FROM model GROUP BY room"
     );
+    print("inside distinct room");
+    print(maps.length);
     return List.generate(maps.length, (i) {
+      print(maps[i]);
       return Led(
-          id: maps[i]['id'],
+          component_id: maps[i]['component_id'],
           state: maps[i]['state'],
           room: maps[i]['room'],
       variable: maps[i]['variable'],
-          name: maps[i]['name'],
+          component_name: maps[i]['component_name'],
       type: maps[i]['type']);
     });
   }
@@ -47,11 +50,11 @@ class DbManager {
          "SELECT * FROM model WHERE room=?",[room]);
      return List.generate(maps.length, (i) {
        return Led(
-           id: maps[i]['id'],
+           component_id: maps[i]['component_id'],
            state: maps[i]['state'],
            room: maps[i]['room'],
            variable: maps[i]['variable'],
-           name: maps[i]['name'],
+           component_name: maps[i]['component_name'],
            type: maps[i]['type']);
      });
    }
@@ -62,11 +65,11 @@ class DbManager {
 
     return List.generate(maps.length, (i) {
       return Led(
-          id: maps[i]['id'],
+          component_id: maps[i]['component_id'],
           state: maps[i]['state'],
           room: maps[i]['room'],
           variable: maps[i]['variable'],
-          name: maps[i]['name'],
+          component_name: maps[i]['component_name'],
           type: maps[i]['type']);
 
     });
@@ -79,11 +82,11 @@ class DbManager {
   Future<int> updateModel(Led table) async {
     await openDb();
     return await _database!.update('model', table.toJson(),
-        where: "id = ?", whereArgs: [table.id]);
+        where: "id = ?", whereArgs: [table.component_id]);
   }
 
   Future<void> deleteModel(Led table) async {
     await openDb();
-    await _database!.delete('model', where: "id = ?", whereArgs: [table.id]);
+    await _database!.delete('model', where: "id = ?", whereArgs: [table.component_id]);
   }
 }
